@@ -31,7 +31,7 @@ client.on("message", (msg) =>
 
     const channelCategory = msg.channel.parent.name
 
-    msg.channel.send("Starting an available check for " + channelCategory);
+    msg.channel.send("Starting an available check for @" + channelCategory);
   }
 
   // Shows current states of people who reacted
