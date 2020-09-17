@@ -7,9 +7,6 @@ const Discord = require("discord.js")
 const client = new Discord.Client()
 
 lastMessage = new Discord.Message;
-var counterAccept = 0;
-var counterDenied = 0;
-var counterNotSure = 0;
 var arrayAccept = [];
 var arrayDenied = [];
 var arrayNotSure = [];
@@ -142,7 +139,7 @@ client.on('messageReactionRemove', (reaction, user) =>
   if(reaction.emoji.name === "✅") 
   {
     arrayAccept = arrayAccept.filter(e => e !== user.username)
-    reaction.message.channel.send(`${user.username} left the party! [${counterAccept}]`)
+    reaction.message.channel.send(`${user.username} left the party! [${arrayAccept.length}]`)
   }
   else if(reaction.emoji.name === "❌") 
   {
