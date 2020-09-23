@@ -246,7 +246,6 @@ function HelpCommand(msg)
   "• Added customized messages for state pick\n" +
   "\n" +
   "__**Notes**__\n" +
-  "*• !Ready Start only works inside a channel called \"__ready-check__\"*\n" + 
   "*• !Ready Who only works if the origin check is within the latest 50 messages!*\n" +
   "*• If the channel-category matches a server-role, users automatically get mentioned by the bot*\n" +
   "\n" +
