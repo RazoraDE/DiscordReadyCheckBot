@@ -14,7 +14,7 @@ var arrayNotSure = []
 
 var arrayAcceptMsg = ["joined the party!", "joined the squad!", "saved the day!", "wants to spend the evening with awesome people!"]
 var arrayDeniedMsg = ["seems to have cooler friends.", "is not in the mood for the group.", "must have better things to do.", "doesn't have time for that bs."]
-var arrayNotSureMsg = ["can't decide right now.", "isn't sure yet.", "has to think twice about it"]
+var arrayNotSureMsg = ["can't decide right now.", "isn't sure yet.", "has to think twice about it."]
 
 client.on("ready", () =>{
   console.log(`Logged in as ${client.user.tag}!`);
@@ -39,23 +39,23 @@ client.on("message", (msg) =>
       HelpCommand(msg)
     }
 
-    // Starts an ready check
-    if (msg.content.toLowerCase() === "!Ready Start".toLowerCase()) 
+    // Starts a ready check
+    if (msg.content.toLowerCase() === "!Ready Start".toLowerCase() || msg.content.toLowerCase() === "!RC Start".toLowerCase()) 
     {
       ResetValues()
       var role = msg.member.roles.cache.find(r => r.name === channelCategory)
       if(role)
       {
-        msg.channel.send(`Starting an ready check for ${role}`);
+        msg.channel.send(`Starting a ready check for ${role}`);
       }
       else
       {
-        msg.channel.send(`Starting an ready check`);
+        msg.channel.send(`Starting a ready check`);
       }
     }
 
     // Shows current states of people who reacted
-    if (msg.content.toLowerCase() === "!Ready Who".toLowerCase()) 
+    if (msg.content.toLowerCase() === "!Ready Who".toLowerCase() || msg.content.toLowerCase() === "!RC Who".toLowerCase() ) 
     {
       ResetValues();
 
@@ -65,7 +65,7 @@ client.on("message", (msg) =>
     }
 
     // Adds reactions to current ready check
-    if(msg.content.startsWith("Starting an ready check for") && msg.author.id === botId)
+    if(msg.content.startsWith("Starting a ready check") && msg.author.id === botId)
     {
       AddReactionsToreadyCheck(msg);
     }
@@ -105,7 +105,7 @@ function GetReactionsFromLastCheck(msg)
     {
     msg.channel.messages.fetch().then((messages) => 
     {
-      var acMessage = messages.array().filter(m => m.content.startsWith("Starting an ready check for"))[0];
+      var acMessage = messages.array().filter(m => m.content.startsWith("Starting a ready check"))[0];
       if(acMessage.author.id === botId)
       {
         var reactionAccept = acMessage.reactions.cache.find(r => r.emoji.name === '✅');
@@ -237,12 +237,12 @@ function HelpCommand(msg)
 {
   msg.channel.send("**################## Ready Check ##################**\n" +
   "\n" +
-  "__**Commands:**__\n" +
-  "**!Ready Start** \t Starts a new ready check\n" +
-  "**!Ready Who** \t Shows who is ready\n" +
+  "__**Commands (non case sensitive):**__\n" +
+  "**!Ready Start | !RC Start** \t Starts a new ready check\n" +
+  "**!Ready Who | !RC Who** \t Shows who is ready\n" +
   "\n" +
   "__**Latest change:**__\n" +
-  "• An ready check can now get called in multiple channels\n" +
+  "• A ready check can now get called in multiple channels\n" +
   "• Added customized messages for state pick\n" +
   "\n" +
   "__**Notes**__\n" +
@@ -252,9 +252,9 @@ function HelpCommand(msg)
   "\n" +
   "__**Bugs**__\n" +
   "• Users are able to select multiple states\n" +
-  "• Don't write \"*Starting an ready check for*\". Just don't. Much Error.\n" +
+  "• Don't write \"*Starting a ready check*\". Just don't. Much Error.\n" +
   "\n" +
-  "*Current Version: 1.1.0 (23/09/2020)*\n" +
+  "*Current Version: 1.1.1 (23/09/2020)*\n" +
   "*Developed by Razora*\n" +
   "\n" +
   "**################################################**");
