@@ -256,6 +256,7 @@ function HelpCommand(msg)
   "\n" +
   "*Current Version: 1.1.1 (23/09/2020)*\n" +
   "*Developed by Razora*\n" +
+  "*Source Code: https://github.com/RazoraDE/DiscordReadyCheckBot*\n" +
   "\n" +
   "**################################################**");
 }
