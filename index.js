@@ -58,7 +58,6 @@ client.on("message", (msg) =>
     if (msg.content.toLowerCase() === "!Ready Who".toLowerCase() || msg.content.toLowerCase() === "!RC Who".toLowerCase() ) 
     {
       ResetValues();
-
       GetReactionsFromLastCheck(msg).then(value => {
         PrintWhosReady(msg);
       });
@@ -137,7 +136,6 @@ function GetReactionsFromLastCheck(msg)
           {
             userArray.filter(u => !u.bot).forEach(name => {
               arrayNotSure.push(name.username)
-
             });
             console.log("Resolved")
             resolve()
@@ -189,7 +187,7 @@ function AddUser(reaction, user)
   {
     if(user.id !== botId)
     {
-      arrayAccept.push(user.username)
+      console.log(user.username + " joined")
       reaction.message.channel.send(`✅ ${user.username} ${arrayAcceptMsg[Math.floor(Math.random() * arrayAcceptMsg.length)]} [${arrayAccept.length}]`)
     }
   }
@@ -197,7 +195,7 @@ function AddUser(reaction, user)
   {
     if(user.id !== botId)
     {
-      arrayDenied.push(user.username)
+      console.log(user.username + " declined")
       reaction.message.channel.send(`❌ ${user.username} ${arrayDeniedMsg[Math.floor(Math.random() * arrayDeniedMsg.length)]} [${arrayDenied.length}]`)
     }
   }
@@ -205,7 +203,7 @@ function AddUser(reaction, user)
   {
     if(user.id !== botId)
     {
-      arrayNotSure.push(user.username)
+      console.log(user.username + " not sure")
       reaction.message.channel.send(`❔ ${user.username} ${arrayNotSureMsg[Math.floor(Math.random() * arrayNotSureMsg.length)]} [${arrayNotSure.length}]`)
     }
   }
@@ -215,16 +213,16 @@ function RemoveUser(reaction, user)
 {
   if(reaction.emoji.name === "✅") 
   {
-    arrayAccept = arrayAccept.filter(e => e !== user.username)
+    //arrayAccept = arrayAccept.filter(e => e !== user.username)
     reaction.message.channel.send(`❌ ${user.username} left the party! [${arrayAccept.length}]`)
   }
   else if(reaction.emoji.name === "❌") 
   {
-    arrayDenied = arrayDenied.filter(e => e !== user.username)
+    //arrayDenied = arrayDenied.filter(e => e !== user.username)
   }
   else if(reaction.emoji.name === "❔") 
   {
-    arrayNotSure = arrayNotSure.filter(e => e !== user.username)
+    //arrayNotSure = arrayNotSure.filter(e => e !== user.username)
   }
 }
 
