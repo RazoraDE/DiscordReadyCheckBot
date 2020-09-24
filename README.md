@@ -19,6 +19,6 @@ Invitation-Link: https://discord.com/api/oauth2/authorize?client_id=753270895560
 • Users are able to select multiple states.  
 • Don't write "*Starting a ready check for*". Just don't. Much Error.  
 
-*Current Version: 1.1.0 (23/09/2020)*   
+*Current Version: 1.1.2 (24/09/2020)*   
 *Developed by Razora*  
 *Source Code: https://github.com/RazoraDE/DiscordReadyCheckBot*

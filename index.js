@@ -255,7 +255,7 @@ function HelpCommand(msg)
   "• Users are able to select multiple states\n" +
   "• Don't write \"*Starting a ready check*\". Just don't. Much Error.\n" +
   "\n" +
-  "*Current Version: 1.1.1 (23/09/2020)*\n" +
+  "*Current Version: 1.1.2 (24/09/2020)*\n" +
   "*Developed by Razora*\n" +
   "*Source Code: https://github.com/RazoraDE/DiscordReadyCheckBot*\n" +
   "\n" +
