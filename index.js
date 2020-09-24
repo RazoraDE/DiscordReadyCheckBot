@@ -211,7 +211,7 @@ function AddUser(reaction, user)
   }
 }
 
-function RemoveUser(reaction)
+function RemoveUser(reaction, user)
 {
   if(reaction.emoji.name === "✅") 
   {
