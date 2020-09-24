@@ -75,16 +75,18 @@ client.on("message", (msg) =>
 client.on('messageReactionAdd', (reaction, user) => 
 {
   ResetValues();
-  GetReactionsFromLastCheck(reaction.message);
-  AddUser(reaction, user);
+  GetReactionsFromLastCheck(reaction.message).then(value => {
+    AddUser(reaction, user);
+  });
 })
 
 // ON GET MESSAGE REACT REMOVE
 client.on('messageReactionRemove', (reaction, user) => 
 {
   ResetValues();
-  GetReactionsFromLastCheck(reaction.message);
-  RemoveUser(reaction, user);
+  GetReactionsFromLastCheck(reaction.message).then(value => {
+    RemoveUser(reaction, user);
+  });
 })
 
 client.login(process.env.BOT_TOKEN)
