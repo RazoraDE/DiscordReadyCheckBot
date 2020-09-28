@@ -5,11 +5,12 @@ Invitation-Link: https://discord.com/api/oauth2/authorize?client_id=753270895560
 **Commands:**  
 
 **!Ready Start | !RC Start** - Starts a new ready check  
-**!Ready Who | !RC Start** - Shows who is ready  
+**!Ready Who | !RC Who** - Shows who is ready  
 
 **Latest change:**  
-• A ready check can now get called in multiple channels.  
-• Added customized messages for state pick.  
+• Fix: The bot now fetches old messages even after reconnecting so that reactions are recognized  
+• Fix: User-Count after a react now works as it should be  
+• Change: **!RC Who**-command only sends one message instead of three and is better formatted  
 
 **Notes**  
 • **!Ready Who** only works if the origin check is within the **latest 50 messages!**  
@@ -17,8 +18,7 @@ Invitation-Link: https://discord.com/api/oauth2/authorize?client_id=753270895560
 
 **Bugs**  
 • Users are able to select multiple states.  
+• The bot won't write a "confirm"-message when a user reacts too quick while the bot is adding the reactions  
 • Don't write "*Starting a ready check for*". Just don't. Much Error.  
 
-*Current Version: 1.1.2 (24/09/2020)*   
-*Developed by Razora*  
-*Source Code: https://github.com/RazoraDE/DiscordReadyCheckBot*
+*Current Version: 1.1.3 (28/09/2020)* 

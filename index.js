@@ -4,9 +4,10 @@
 require("dotenv").config()
 
 const Discord = require("discord.js")
-const client = new Discord.Client()
+const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 
 var botId = "753270895560359967";
+var botIdDevelopment = "760180386499657744";
 
 var arrayAccept = []
 var arrayDenied = []
@@ -21,7 +22,7 @@ client.on("ready", () =>{
   client.user.setPresence({
       status: "online",  //You can show online, idle....
       activity: {
-          name: "!Ready ? for help",  //The message shown
+          name: "!RC ? for help",  //The message shown
           type: "PLAYING" //PLAYING: WATCHING: LISTENING: STREAMING:
       }
   });
@@ -34,7 +35,10 @@ client.on("message", (msg) =>
   const channelCategory = msg.channel.parent.name
 
     // Shows commands for the bot
-    if(msg.content.toLowerCase() === "!Ready ?".toLowerCase() || msg.content.toLowerCase() === "!Ready Help".toLowerCase())
+    if(msg.content.toLowerCase() === "!Ready ?".toLowerCase() || 
+      msg.content.toLowerCase() === "!Ready Help".toLowerCase() || 
+      msg.content.toLowerCase() === "!RC Help".toLowerCase() || 
+      msg.content.toLowerCase() === "!RC ?".toLowerCase())
     {
       HelpCommand(msg)
     }
@@ -57,14 +61,15 @@ client.on("message", (msg) =>
     // Shows current states of people who reacted
     if (msg.content.toLowerCase() === "!Ready Who".toLowerCase() || msg.content.toLowerCase() === "!RC Who".toLowerCase() ) 
     {
-      ResetValues();
-      GetReactionsFromLastCheck(msg).then(value => {
-        PrintWhosReady(msg);
-      });
+      ResetValues().then(value => {
+        GetReactionsFromLastCheck(msg).then(value => {
+          PrintWhosReady(msg);
+        });
+      })
     }
 
     // Adds reactions to current ready check
-    if(msg.content.startsWith("Starting a ready check") && msg.author.id === botId)
+    if(msg.content.startsWith("Starting a ready check") && (msg.author.id === botId || msg.author.id === botIdDevelopment))
     {
       AddReactionsToreadyCheck(msg);
     }
@@ -73,31 +78,35 @@ client.on("message", (msg) =>
 // ON GET MESSAGE REACT ADD
 client.on('messageReactionAdd', (reaction, user) => 
 {
-  ResetValues();
-  GetReactionsFromLastCheck(reaction.message).then(value => {
-    AddUser(reaction, user);
-  });
+  ResetValues().then(value => {
+    GetReactionsFromLastCheck(reaction.message).then(value => {
+      AddUser(reaction, user);
+    });
+  })
 })
 
 // ON GET MESSAGE REACT REMOVE
 client.on('messageReactionRemove', (reaction, user) => 
 {
-  ResetValues();
-  GetReactionsFromLastCheck(reaction.message).then(value => {
-    RemoveUser(reaction, user);
-  });
+  ResetValues().then(value => {
+    GetReactionsFromLastCheck(reaction.message).then(value => {
+      RemoveUser(reaction, user);
+    });
+  })
 })
 
 client.login(process.env.BOT_TOKEN)
 
 
 
-
 function ResetValues()
 {
-  arrayAccept = []
-  arrayDenied = []
-  arrayNotSure = []
+  return new Promise((resolve, reject)  => {
+    arrayAccept = []
+    arrayDenied = []
+    arrayNotSure = []
+    resolve();
+  });
 }
 
 function GetReactionsFromLastCheck(msg)
@@ -107,7 +116,7 @@ function GetReactionsFromLastCheck(msg)
     msg.channel.messages.fetch().then((messages) => 
     {
       var acMessage = messages.array().filter(m => m.content.startsWith("Starting a ready check"))[0];
-      if(acMessage.author.id === botId)
+      if(acMessage.author.id === botId || acMessage.author.id === botIdDevelopment)
       {
         var reactionAccept = acMessage.reactions.cache.find(r => r.emoji.name === '✅');
         var reactionDenied = acMessage.reactions.cache.find(r => r.emoji.name === '❌');
@@ -117,7 +126,9 @@ function GetReactionsFromLastCheck(msg)
           reactionAccept.users.fetch().then((userArray) =>
           {
             userArray.filter(u => !u.bot).forEach(name => {
-              arrayAccept.push(name.username)
+              if(!arrayAccept.includes(name.username)){
+                arrayAccept.push(name.username)
+              }
             });
           })
         }
@@ -126,7 +137,9 @@ function GetReactionsFromLastCheck(msg)
           reactionDenied.users.fetch().then((userArray) =>
           {
             userArray.filter(u => !u.bot).forEach(name => {
-              arrayDenied.push(name.username)
+              if(!arrayDenied.includes(name.username)){
+                arrayDenied.push(name.username)
+              }
             });
           })
         }
@@ -135,9 +148,10 @@ function GetReactionsFromLastCheck(msg)
           reactionNotSure.users.fetch().then((userArray) =>
           {
             userArray.filter(u => !u.bot).forEach(name => {
-              arrayNotSure.push(name.username)
+              if(!arrayNotSure.includes(name.username)){
+                arrayNotSure.push(name.username)
+              }
             });
-            console.log("Resolved")
             resolve()
           })
         }
@@ -151,60 +165,58 @@ function GetReactionsFromLastCheck(msg)
 
 function PrintWhosReady(msg)
 {
+  var arrayOutput = [];
+
   if(arrayAccept.length > 0)
   {
     if(arrayAccept.length === 1)
-      msg.channel.send(`${arrayAccept.length} person is ready for some awesome games: ${arrayAccept}`)
+      arrayOutput.push(`✅ ${arrayAccept.length} person is ready for some awesome games \n**${arrayAccept}**\n`)
     else
-      msg.channel.send(`${arrayAccept.length} people are ready for some awesome games: ${arrayAccept}`)
+      arrayOutput.push(`✅ ${arrayAccept.length} people are ready for some awesome games \n**${arrayAccept.join(", ")}**\n`)
   }
 
   if(arrayDenied.length > 0)
   {
     if(arrayDenied.length === 1)
-      msg.channel.send(`${arrayDenied.length} person hates having fun: ${arrayDenied}`)
+      arrayOutput.push(`❌ ${arrayDenied.length} person hates having fun \n~~${arrayDenied}~~\n`)
     else
-      msg.channel.send(`${arrayDenied.length} people hate having fun: ${arrayDenied}`)
+      arrayOutput.push(`❌ ${arrayDenied.length} people hate having fun \n~~${arrayDenied.join(", ")}~~\n`)
   }
 
   if(arrayNotSure.length > 0)
   {
     if(arrayNotSure.length === 1)
-      msg.channel.send(`${arrayNotSure.length} person has to rethink their live: ${arrayNotSure}`)
+      arrayOutput.push(`❔ ${arrayNotSure.length} person has to rethink their live \n*${arrayNotSure}*\n`)
     else
-      msg.channel.send(`${arrayNotSure.length} people have to rethink their lives: ${arrayNotSure}`)
+      arrayOutput.push(`❔ ${arrayNotSure.length} people have to rethink their lives \n*${arrayNotSure.join(", ")}*\n`)
   } 
 
   if(arrayAccept.length === 0)
   {
-    msg.channel.send("Nobody wants to play with u.")
+      arrayOutput.push("Nobody wants to play with u.")
   }
+
+  msg.channel.send(arrayOutput.join('\n'));
 }
 
 function AddUser(reaction, user)
 {
-  if(reaction.emoji.name === "✅")
+  if(!user.bot)
   {
-    if(user.id !== botId)
+    if(reaction.emoji.name === "✅")
     {
-      console.log(user.username + " joined")
-      reaction.message.channel.send(`✅ ${user.username} ${arrayAcceptMsg[Math.floor(Math.random() * arrayAcceptMsg.length)]} [${arrayAccept.length}]`)
+        console.log(user.username + " joined")
+        reaction.message.channel.send(`✅ ${user.username} ${arrayAcceptMsg[Math.floor(Math.random() * arrayAcceptMsg.length)]} [${arrayAccept.length}]`)
     }
-  }
-  else if(reaction.emoji.name === "❌") 
-  {
-    if(user.id !== botId)
+    else if(reaction.emoji.name === "❌") 
     {
-      console.log(user.username + " declined")
-      reaction.message.channel.send(`❌ ${user.username} ${arrayDeniedMsg[Math.floor(Math.random() * arrayDeniedMsg.length)]} [${arrayDenied.length}]`)
+        console.log(user.username + " declined")
+        reaction.message.channel.send(`❌ ${user.username} ${arrayDeniedMsg[Math.floor(Math.random() * arrayDeniedMsg.length)]} [${arrayDenied.length}]`)
     }
-  }
-  else if(reaction.emoji.name === "❔") 
-  {
-    if(user.id !== botId)
+    else if(reaction.emoji.name === "❔") 
     {
-      console.log(user.username + " not sure")
-      reaction.message.channel.send(`❔ ${user.username} ${arrayNotSureMsg[Math.floor(Math.random() * arrayNotSureMsg.length)]} [${arrayNotSure.length}]`)
+        console.log(user.username + " not sure")
+        reaction.message.channel.send(`❔ ${user.username} ${arrayNotSureMsg[Math.floor(Math.random() * arrayNotSureMsg.length)]} [${arrayNotSure.length}]`)
     }
   }
 }
@@ -242,8 +254,9 @@ function HelpCommand(msg)
   "**!Ready Who | !RC Who** \t Shows who is ready\n" +
   "\n" +
   "__**Latest change:**__\n" +
-  "• A ready check can now get called in multiple channels\n" +
-  "• Added customized messages for state pick\n" +
+  "• Fix: The bot now fetches old messages even after reconnecting so that reactions are recognized\n" +
+  "• Fix: User-Count after a react now works as it should be\n" +
+  "• Change: \"!RC Who\"-command only sends one message instead of three and is better formatted\n" +
   "\n" +
   "__**Notes**__\n" +
   "*• !Ready Who only works if the origin check is within the latest 50 messages!*\n" +
@@ -251,11 +264,12 @@ function HelpCommand(msg)
   "\n" +
   "__**Bugs**__\n" +
   "• Users are able to select multiple states\n" +
+  "• The bot won't write a \"confirm\"-message when a user reacts too quick while the bot is adding the reactions\n" +
   "• Don't write \"*Starting a ready check*\". Just don't. Much Error.\n" +
   "\n" +
-  "*Current Version: 1.1.2 (24/09/2020)*\n" +
+  "*Current Version: 1.1.3 (28/09/2020)*\n" +
   "*Developed by Razora*\n" +
   "*Source Code: https://github.com/RazoraDE/DiscordReadyCheckBot*\n" +
   "\n" +
-  "**################################################**");
+  "**#############################################**");
 }
